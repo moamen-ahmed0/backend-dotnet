@@ -26,6 +26,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Build the application
 var app = builder.Build();
 
+// Create the database/tables if they don't exist yet
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated();
+}
+
 // Enable OpenAPI & Swagger
 app.MapOpenApi();
 app.UseSwagger();
@@ -36,4 +43,4 @@ app.MapUserEndpoints();
 
 app.Run();
 
-// Program.cs: starts the app, wires up services (Swagger, MySQL), registers endpoints.
+// Program.cs: starts the app, wires up services (Swagger, MySQL), ensures the DB schema exists, registers endpoints.
