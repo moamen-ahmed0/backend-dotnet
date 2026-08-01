@@ -45,22 +45,23 @@ app.MapPost("/users", (CreateUserRequest request) =>
 // PUT /users/{id} - Update a user by ID
 app.MapPut("/users/{id}", (int id, UpdateUserRequest request) =>
 {
+    // 1. Find the user with the given ID
     var user = users.FirstOrDefault(u => u.Id == id);
 
-    // Return 404 if the user does not exist
+    // 2. If the user doesn't exist, return 404 Not Found
     if (user is null)
     {
         return Results.NotFound("User not found.");
     }
 
-    // Create a copy of the user with updated values
+    // 3. Create a new user object with the updated data
     var updatedUser = user with
     {
         Username = request.Username,
         Password = request.Password
     };
 
-    // Replace the old user with the updated one
+    // 4. Replace the old user in the list with the updated one
     var index = users.IndexOf(user);
     users[index] = updatedUser;
 
