@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.4                 # MySQL image
+    container_name: mysql-local      # Container name
+
+    environment:
+      MYSQL_ROOT_PASSWORD: password  # Root password
+      MYSQL_DATABASE: users_db       # Database name
+      MYSQL_USER: user               # Application user
+      MYSQL_PASSWORD: password       # Application password
+
+    ports:
+      - "3306:3306"                  # Host machine : Container
+
+    volumes:
+      - mysql_data:/var/lib/mysql    # Host machine : Container
+
+volumes:
+  mysql_data:                        # Create a Docker volume
