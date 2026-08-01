@@ -22,7 +22,7 @@ services:
       retries: 10
 
   backend:
-    build: .                         # Build from ./Dockerfile
+    build: ./backend                 # Build from ./backend/Dockerfile
     container_name: backend-local
 
     environment:
