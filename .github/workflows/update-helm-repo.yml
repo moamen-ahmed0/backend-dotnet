@@ -1,0 +1,50 @@
+# After images are built, update the helm repo with the new image tag
+name: Update helm repo image tags
+
+# Run after the build workflow finishes, so the images already exist
+on:
+  workflow_run:
+    workflows: ["Build and push Docker images"]
+    types: [completed]
+    branches: [main]
+
+jobs:
+  update:
+    # only continue if the build actually succeeded
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      # clone the helm repo (needs a PAT since it's a different repo)
+      - name: Check out helm-webapp-multi-env
+        uses: actions/checkout@v7
+        with:
+          repository: moamen-ahmed0/helm-webapp-multi-env
+          token: ${{ secrets.HELM_WEBAPP_REPO_ACCESS_TOKEN }}
+
+      # yq lets us edit yaml fields from the command line
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+      # set the image tag to the new commit sha, for every environment
+      - name: Bump image tags to the new commit SHA
+        env:
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          for env in dev stg prod; do
+            file="charts/webapp/envs/values-$env.yaml"
+            yq -i ".backend.image.tag = \"$SHA\"" "$file"
+            yq -i ".frontend.image.tag = \"$SHA\"" "$file"
+          done
+
+      # push the change so ArgoCD can pick it up
+      - name: Commit and push changes
+        env:
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add charts/webapp/envs/values-dev.yaml charts/webapp/envs/values-stg.yaml charts/webapp/envs/values-prod.yaml
+          git commit -m "chore: bump image tag to ${SHA}" || { echo "No changes to commit"; exit 0; }
+          git push
