@@ -12,3 +12,4 @@ RUN npm run build
 FROM nginx:1.31.3-alpine AS final
 COPY --from=build /src/dist /usr/share/nginx/html
 EXPOSE 80
+
