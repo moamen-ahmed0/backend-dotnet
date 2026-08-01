@@ -83,3 +83,6 @@ Thumbs.db
 *.tmp
 *.cache
 *.swp
+
+# Useful commands
+useful-commands.md
