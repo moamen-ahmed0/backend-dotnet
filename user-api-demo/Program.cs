@@ -35,3 +35,5 @@ app.UseSwaggerUI();
 app.MapUserEndpoints();
 
 app.Run();
+
+// Program.cs: starts the app, wires up services (Swagger, MySQL), registers endpoints.

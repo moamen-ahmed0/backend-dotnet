@@ -9,3 +9,5 @@ public record UpdateUserRequest(
     string Username,
     string Password
 );
+
+// UserRequests: shape of the JSON the client sends in for create/update.

@@ -8,3 +8,5 @@ public class User
 
     public string Password { get; set; } = string.Empty;
 }
+
+// User: represents one row in the Users database table.

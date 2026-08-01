@@ -12,3 +12,5 @@ public class AppDbContext : DbContext
 
     public DbSet<User> Users => Set<User>();
 }
+
+// AppDbContext: connects to MySQL, exposes tables (DbSet<T>) for EF Core.

@@ -19,3 +19,5 @@ services:
 
 volumes:
   mysql_data:                        # Create a Docker volume
+
+# docker-compose.yml: runs MySQL locally for the app to connect to.
