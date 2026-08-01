@@ -15,7 +15,37 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql    # Host machine : Container
 
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: .                         # Build from ./Dockerfile
+    container_name: backend-local
+
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=mysql;Port=3306;Database=users_db;User=user;Password=password;"
+
+    ports:
+      - "5097:8080"                  # Host machine : Container
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend                # Build from ./frontend/Dockerfile
+    container_name: frontend-local
+
+    ports:
+      - "5173:80"                    # Host machine : Container
+
+    depends_on:
+      - backend
+
 volumes:
   mysql_data:                        # Create a Docker volume
 
-# docker-compose.yml: runs MySQL locally for the app to connect to.
+# docker-compose.yml: runs MySQL, the .NET backend API, and the React frontend together.

@@ -13,6 +13,17 @@ builder.Services.AddOpenApi();
 // Add Swagger
 builder.Services.AddSwaggerGen();
 
+// Allow the local React dev server to call this API
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendDev", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // Configure MySQL
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -37,6 +48,8 @@ using (var scope = app.Services.CreateScope())
 app.MapOpenApi();
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseCors("FrontendDev");
 
 // Register the /users endpoints
 app.MapUserEndpoints();
