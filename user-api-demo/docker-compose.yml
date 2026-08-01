@@ -23,6 +23,7 @@ services:
 
   backend:
     build: ./backend                 # Build from ./backend/Dockerfile
+    image: moamen800/user-api-backend:latest
     container_name: backend-local
 
     environment:
@@ -37,6 +38,7 @@ services:
 
   frontend:
     build: ./frontend                # Build from ./frontend/Dockerfile
+    image: moamen800/user-api-frontend:latest
     container_name: frontend-local
 
     ports:
