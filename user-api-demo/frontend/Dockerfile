@@ -11,5 +11,6 @@ RUN npm run build
 # Final stage: serve the static files with a lightweight nginx image
 FROM nginx:1.31.3-alpine AS final
 COPY --from=build /src/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 
